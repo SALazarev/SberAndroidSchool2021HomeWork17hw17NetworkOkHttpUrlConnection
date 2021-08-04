@@ -32,7 +32,7 @@ class UrlConnectionApi : ClientApi() {
         }
     }
 
-    override fun postsAdd(userId: Long, title: String, body: String): String {
+    override fun postsAdd(title: String, price: Double, description: String): String {
         var connection: HttpsURLConnection? = null
         return try {
             connection = getHttpsUrlConnection().apply {
@@ -41,7 +41,7 @@ class UrlConnectionApi : ClientApi() {
                 doOutput = true
             }
             BufferedWriter(OutputStreamWriter(connection.outputStream)).apply {
-                write(getRequestBody(userId, title, body))
+                write(getRequestBody(title, price, description))
                 flush()
             }
             readResponse(connection)

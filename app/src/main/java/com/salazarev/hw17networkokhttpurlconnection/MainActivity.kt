@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         }
         addNoteBtn.setOnClickListener {
             submitRequest {
-                val text = clientApi.postsAdd(12, "title", "body")
+                val text = clientApi.postsAdd("Test product", 13.5, "Test description")
                 responseTv.post { responseTv.text = text }
             }
         }
