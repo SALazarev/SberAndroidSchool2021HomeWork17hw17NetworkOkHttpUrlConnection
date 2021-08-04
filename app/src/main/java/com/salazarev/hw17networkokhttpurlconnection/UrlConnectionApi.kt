@@ -1,6 +1,5 @@
 package com.salazarev.hw17networkokhttpurlconnection
 
-import com.salazarev.hw17networkokhttpurlconnection.ClientApi.Companion.REQUEST_URL
 import java.io.*
 import java.lang.Exception
 import java.net.URL

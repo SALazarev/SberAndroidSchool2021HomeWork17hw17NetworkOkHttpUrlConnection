@@ -13,7 +13,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var addNoteBtn: Button
     private lateinit var responseTv: TextView
 
-    private var clientApi: ClientApi = UrlConnectionApi()
+    private var clientApi: ClientApi = OkHttpApi()
     private val executor = Executors.newSingleThreadExecutor()
     private var lastTask: Future<*>? = null
 

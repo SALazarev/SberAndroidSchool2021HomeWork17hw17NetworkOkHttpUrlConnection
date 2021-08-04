@@ -16,15 +16,16 @@ class OkHttpApi : ClientApi() {
     }
 
     private var okHttpClient: OkHttpClient = OkHttpClient().newBuilder()
-        .readTimeout(5, TimeUnit.MILLISECONDS)
-        .writeTimeout(5, TimeUnit.MILLISECONDS)
+        .readTimeout(5000, TimeUnit.MILLISECONDS)
+        .writeTimeout(5000, TimeUnit.MILLISECONDS)
         .addNetworkInterceptor(HttpLoggingInterceptor())
         .build()
 
     override fun postsAdd(userId: Long, title: String, body: String): String {
         val request = Request.Builder()
-            .method("POST", getRequestBody(userId, title, body).toRequestBody())
             .url(REQUEST_URL.toHttpUrl())
+            .addHeader("Content-Type", "application/json")
+            .post(getRequestBody(userId, title, body).toRequestBody())
             .build()
         return handleResponse(request)
     }
