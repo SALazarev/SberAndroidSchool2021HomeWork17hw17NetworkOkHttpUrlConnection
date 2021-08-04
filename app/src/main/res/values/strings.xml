@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">HomeWork17NetworkOkHttpUrlConnection</string>
+    <string name="add_note">Добавить запись</string>
+    <string name="get_all_note">Получить все записи</string>
 </resources>
