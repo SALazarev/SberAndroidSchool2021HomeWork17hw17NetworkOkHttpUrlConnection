@@ -26,20 +26,20 @@ class MainActivity : AppCompatActivity() {
 
         getAllNoteBtn.setOnClickListener {
             submitRequest {
-                val text = clientApi.postsList()
+                val text = clientApi.productsList()
                 responseTv.post { responseTv.text = text }
             }
         }
         addNoteBtn.setOnClickListener {
             submitRequest {
-                val text = clientApi.postsAdd("Test product", 13.5, "Test description")
+                val text = clientApi.productAdd("Test product", 13.5, "Test description")
                 responseTv.post { responseTv.text = text }
             }
         }
     }
 
     private fun submitRequest(runnable: Runnable) {
-        if (lastTask != null) lastTask?.cancel(true)
+        lastTask?.cancel(true)
         lastTask = executor.submit(runnable)
     }
 

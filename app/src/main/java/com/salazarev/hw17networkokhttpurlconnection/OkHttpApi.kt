@@ -1,6 +1,5 @@
 package com.salazarev.hw17networkokhttpurlconnection
 
-import android.util.Log
 import okhttp3.*
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -15,7 +14,7 @@ class OkHttpApi : ClientApi() {
         .addNetworkInterceptor(HttpLoggingInterceptor())
         .build()
 
-    override fun postsAdd(title: String, price: Double, description: String): String {
+    override fun productAdd(title: String, price: Double, description: String): String {
         val request = Request.Builder()
             .url(REQUEST_URL.toHttpUrl())
             .addHeader("Content-Type", "application/json")
@@ -24,7 +23,7 @@ class OkHttpApi : ClientApi() {
         return handleResponse(request)
     }
 
-    override fun postsList(): String {
+    override fun productsList(): String {
         val request = Request.Builder()
             .url(REQUEST_URL.toHttpUrl())
             .build()

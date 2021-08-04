@@ -8,16 +8,16 @@ abstract class ClientApi {
         const val REQUEST_URL = "https://fakestoreapi.com/products"
     }
 
-    abstract fun postsAdd(title: String, price: Double, description: String): String
+    abstract fun productAdd(title: String, price: Double, description: String): String
 
-    abstract fun postsList(): String
+    abstract fun productsList(): String
 
     fun getRequestBody(title: String, price: Double, description: String): String {
         val moshi = Moshi.Builder()
             .add(KotlinJsonAdapterFactory())
             .build()
-        val adapter = moshi.adapter(Post::class.java)
-        return adapter.toJson(Post(title, price, description))
+        val adapter = moshi.adapter(Product::class.java)
+        return adapter.toJson(Product(title, price, description))
     }
 
 }

@@ -7,6 +7,11 @@ import javax.net.ssl.HttpsURLConnection
 
 class UrlConnectionApi : ClientApi() {
 
+    companion object {
+        const val OK_CODE = 200
+        const val CREATED_CODE = 201
+    }
+
     @Throws(IOException::class)
     fun getHttpsUrlConnection(): HttpsURLConnection {
         val url = URL(REQUEST_URL)
@@ -16,23 +21,7 @@ class UrlConnectionApi : ClientApi() {
         return connection
     }
 
-    private fun readResponse(connection: HttpsURLConnection): String {
-        connection.connect()
-        val responseCode = connection.responseCode
-        return if (responseCode != 200 && responseCode != 201) "Response code: $responseCode"
-        else {
-            val builder = StringBuilder()
-            val reader = BufferedReader(InputStreamReader(connection.inputStream))
-            var line: String? = reader.readLine()
-            while (line != null) {
-                builder.append(line).append("\n")
-                line = reader.readLine()
-            }
-            builder.toString()
-        }
-    }
-
-    override fun postsAdd(title: String, price: Double, description: String): String {
+    override fun productAdd(title: String, price: Double, description: String): String {
         var connection: HttpsURLConnection? = null
         return try {
             connection = getHttpsUrlConnection().apply {
@@ -52,7 +41,7 @@ class UrlConnectionApi : ClientApi() {
         }
     }
 
-    override fun postsList(): String {
+    override fun productsList(): String {
         var connection: HttpsURLConnection? = null
         return try {
             connection = getHttpsUrlConnection()
@@ -61,6 +50,23 @@ class UrlConnectionApi : ClientApi() {
             e.toString()
         } finally {
             connection?.disconnect()
+        }
+    }
+
+    private fun readResponse(connection: HttpsURLConnection): String {
+        connection.connect()
+        val responseCode = connection.responseCode
+        return if (responseCode != OK_CODE && responseCode != CREATED_CODE)
+            "Response code: $responseCode"
+        else {
+            val builder = StringBuilder()
+            val reader = BufferedReader(InputStreamReader(connection.inputStream))
+            var line: String? = reader.readLine()
+            while (line != null) {
+                builder.append(line).append("\n")
+                line = reader.readLine()
+            }
+            builder.toString()
         }
     }
 }
