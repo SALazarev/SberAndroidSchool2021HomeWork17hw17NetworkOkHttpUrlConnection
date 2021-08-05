@@ -4,11 +4,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.schedulers.Schedulers
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -17,7 +13,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var responseTv: TextView
 
     private val compositeDisposable = CompositeDisposable()
-    private var clientApi: ClientApi = OkHttpApi()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,12 +22,7 @@ class MainActivity : AppCompatActivity() {
         responseTv = findViewById(R.id.tv_response)
 
         getAllNoteBtn.setOnClickListener {
-
-            val disposable = Single.fromCallable {
-                return@fromCallable clientApi.productsList()
-            }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+            val disposable= NetworkBackend.productsList
                 .subscribe { text: String, throwable: Throwable? ->
                     if (throwable == null) responseTv.text = text
                 }
@@ -40,12 +30,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         addNoteBtn.setOnClickListener {
-            val disposable = Single.fromCallable {
-                return@fromCallable clientApi
-                    .productAdd("Test product", 13.5, "Test description")
-            }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+            val disposable= NetworkBackend.productAdd
                 .subscribe { text: String, throwable: Throwable? ->
                     if (throwable == null) responseTv.text = text
                 }
