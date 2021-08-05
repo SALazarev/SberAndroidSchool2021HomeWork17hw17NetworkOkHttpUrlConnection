@@ -1,11 +1,14 @@
 package com.salazarev.hw17networkokhttpurlconnection
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
-import java.util.concurrent.Executors
-import java.util.concurrent.Future
+import androidx.appcompat.app.AppCompatActivity
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.schedulers.Schedulers
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -13,9 +16,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var addNoteBtn: Button
     private lateinit var responseTv: TextView
 
+    private val compositeDisposable = CompositeDisposable()
     private var clientApi: ClientApi = OkHttpApi()
-    private val executor = Executors.newSingleThreadExecutor()
-    private var lastTask: Future<*>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,27 +27,35 @@ class MainActivity : AppCompatActivity() {
         responseTv = findViewById(R.id.tv_response)
 
         getAllNoteBtn.setOnClickListener {
-            submitRequest {
-                val text = clientApi.productsList()
-                responseTv.post { responseTv.text = text }
-            }
-        }
-        addNoteBtn.setOnClickListener {
-            submitRequest {
-                val text = clientApi.productAdd("Test product", 13.5, "Test description")
-                responseTv.post { responseTv.text = text }
-            }
-        }
-    }
 
-    private fun submitRequest(runnable: Runnable) {
-        lastTask?.cancel(true)
-        lastTask = executor.submit(runnable)
+            val disposable = Single.fromCallable {
+                return@fromCallable clientApi.productsList()
+            }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { text: String, throwable: Throwable? ->
+                    if (throwable == null) responseTv.text = text
+                }
+            compositeDisposable.add(disposable)
+        }
+
+        addNoteBtn.setOnClickListener {
+            val disposable = Single.fromCallable {
+                return@fromCallable clientApi
+                    .productAdd("Test product", 13.5, "Test description")
+            }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { text: String, throwable: Throwable? ->
+                    if (throwable == null) responseTv.text = text
+                }
+            compositeDisposable.add(disposable)
+        }
+
     }
 
     override fun onStop() {
         super.onStop()
-        executor.shutdown()
-        lastTask = null
+        compositeDisposable.clear()
     }
 }
